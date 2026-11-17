@@ -13,7 +13,7 @@ Everything runs in the browser. Files you open never leave your machine: there i
 5. **Issues**: one issue per bad cell (type, required field or Zod), with its spreadsheet row, cell, schema field and source column, filterable by code.
 6. **Code**: the schema file (ImportSchema + Zod) and the importer for the current setup, as `<DataImport>`, `useDataImport`, `useColumnMapping` or plain `importFile`, with the install command and copy buttons. Hand-picked mappings, the locale and the worker carry over.
 
-Examples are messy files generated in the browser (no third-party data): a title row above the header, wrong headers in a European CSV, missing columns, bad values, extra columns, a missing required column, and a 25,000-row file that is parsed in a Web Worker.
+Examples are messy files generated in the browser (no third-party data): a title row above the header, wrong headers in a European CSV, missing columns, bad values, extra columns, a missing required column, a 25,000-row file that is parsed in a Web Worker, and a CSV with a two-row header (header groups).
 
 Also: three example schemas (contacts, orders, products), number/date locale, Zod on/off, worker on/off, a shareable URL for the whole setup (including the mapping), recent runs in `localStorage`, read and validate timings, light/dark theme and keyboard shortcuts (press `?`).
 
