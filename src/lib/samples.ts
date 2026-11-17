@@ -88,6 +88,16 @@ export const SAMPLES: readonly Sample[] = [
     locale: 'auto',
     build: () => import('./sampleFiles').then((m) => m.BUILDERS['large']!()),
   },
+  {
+    id: 'header-groups',
+    label: 'Header groups',
+    description: 'A CSV with a two-row header: "Stock" spans "Berlin" and "Paris". It is detected and flattened to "Stock / Berlin" and "Stock / Paris"; map stock to one of them by hand.',
+    tags: ['.csv', 'two-row header', 'manual mapping'],
+    fileName: 'stock-by-site.csv',
+    schemaId: 'products',
+    locale: 'auto',
+    build: () => import('./sampleFiles').then((m) => m.BUILDERS['header-groups']!()),
+  },
 ];
 
 export function sampleById(id: string | null | undefined): Sample | undefined {

@@ -126,6 +126,17 @@ export const BUILDERS: Record<string, () => Promise<File>> = {
       ['XYZ-2003', 'Footrest', 27, 0, 'FALSE'],
     ]);
   },
+  'header-groups': async () => {
+    // Header groups as a CSV has them: no merges, the group title only above its first column.
+    return csvFile('stock-by-site.csv', [
+      ['SKU', 'Product', 'Unit price', 'Stock', '', 'Enabled'],
+      ['', '', '', 'Berlin', 'Paris', ''],
+      ['ABC-1001', 'Desk lamp', 39.9, 12, 4, 'TRUE'],
+      ['ABC-1002', 'Notebook, dotted', 6.5, 140, 60, 'TRUE'],
+      ['ABC-1003', 'Pen set', 9, 30, 0, 'FALSE'],
+      ['XYZ-2001', 'Monitor arm', 49, 4, 7, 'TRUE'],
+    ]);
+  },
   'large': async () => {
     const rnd = lcg(42);
     const rows: Array<Array<string | number>> = [['Order ID', 'Order date', 'Customer', 'Qty', 'Unit price', 'Status']];

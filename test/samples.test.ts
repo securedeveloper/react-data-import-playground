@@ -124,4 +124,17 @@ describe('sample files through mapping and Zod validation', () => {
     expect(result.issues).toHaveLength(LARGE_ROWS / 500);
     expect(result.issues.every((i) => i.code === 'TYPE' && i.field === 'quantity' && i.column === 'Qty')).toBe(true);
   });
+
+  it('header groups: the two-row CSV header is detected and flattened; stock maps by hand', async () => {
+    const { raw, result } = await run('header-groups');
+    expect(raw.meta.header).toEqual({ rows: [0, 1], detected: true, confidence: 'high' });
+    expect(raw.columns.map((c) => c.key)).toEqual(['SKU', 'Product', 'Unit price', 'Stock / Berlin', 'Stock / Paris', 'Enabled']);
+    expect(result.meta.mapping).toEqual({ sku: 'SKU', name: 'Product', price: 'Unit price', stock: null, active: 'Enabled' });
+    expect(result.meta.unmappedColumns).toEqual(['Stock / Berlin', 'Stock / Paris']);
+    expect(result.issues).toEqual([]);
+    expect(result.data.map((p) => p.stock)).toEqual([null, null, null, null]);
+    const mapped = await run('header-groups', { stock: 'Stock / Berlin' });
+    expect(mapped.result.data.map((p) => p.stock)).toEqual([12, 140, 30, 4]);
+    expect(mapped.result.rowNumbers).toEqual([3, 4, 5, 6]);
+  });
 });
