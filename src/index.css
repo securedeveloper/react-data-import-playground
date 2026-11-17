@@ -1,0 +1,116 @@
+@import 'tailwindcss';
+
+@custom-variant dark (&:where(.dark, .dark *));
+
+@layer base {
+  html {
+    font-family: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  }
+  body {
+    @apply bg-slate-50 text-slate-900 antialiased dark:bg-slate-950 dark:text-slate-100;
+  }
+  code,
+  kbd,
+  pre {
+    font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  }
+  a {
+    @apply text-indigo-700 underline underline-offset-2 dark:text-indigo-300;
+  }
+  :focus-visible {
+    @apply outline-2 outline-offset-2 outline-indigo-600 dark:outline-indigo-400;
+  }
+}
+
+@layer components {
+  .card {
+    @apply min-w-0 rounded-xl border border-slate-200 bg-white p-4 shadow-sm dark:border-slate-800 dark:bg-slate-900;
+  }
+  .hint {
+    @apply text-sm text-slate-600 dark:text-slate-300;
+  }
+  .label {
+    @apply mb-1 block text-sm font-medium text-slate-800 dark:text-slate-100;
+  }
+  .input {
+    @apply rounded-md border border-slate-300 bg-white px-2 py-1.5 text-sm text-slate-900 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100;
+  }
+  .btn-primary {
+    @apply inline-flex items-center rounded-md bg-indigo-600 px-4 py-2 text-sm font-semibold text-white shadow-sm hover:bg-indigo-700 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-indigo-600;
+  }
+  .btn-secondary {
+    @apply inline-flex items-center rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm font-medium text-slate-800 hover:bg-slate-100 disabled:cursor-not-allowed disabled:opacity-60 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700;
+  }
+  .navlink {
+    @apply rounded-md px-2.5 py-1.5 font-medium text-slate-700 no-underline hover:bg-slate-100 hover:no-underline dark:text-slate-200 dark:hover:bg-slate-800;
+  }
+  .example {
+    @apply block w-full rounded-lg border border-slate-200 px-3 py-2 text-left text-sm hover:border-indigo-400 hover:bg-indigo-50 dark:border-slate-700 dark:hover:border-indigo-500 dark:hover:bg-slate-800;
+  }
+  .example-active {
+    @apply border-indigo-500 bg-indigo-50 dark:border-indigo-400 dark:bg-slate-800;
+  }
+  .badge {
+    @apply inline-flex items-center rounded px-1.5 py-0.5 text-[0.7rem] leading-none font-medium;
+  }
+  .badge-slate {
+    @apply bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-200;
+  }
+  .badge-red {
+    @apply bg-red-100 text-red-800 dark:bg-red-950 dark:text-red-200;
+  }
+  .badge-amber {
+    @apply bg-amber-100 text-amber-900 dark:bg-amber-950 dark:text-amber-200;
+  }
+  .badge-green {
+    @apply bg-emerald-100 text-emerald-900 dark:bg-emerald-950 dark:text-emerald-200;
+  }
+  .badge-violet {
+    @apply bg-violet-100 text-violet-900 dark:bg-violet-950 dark:text-violet-200;
+  }
+  .kbd {
+    @apply inline-block rounded border border-slate-300 bg-slate-100 px-1.5 font-sans text-xs leading-5 text-slate-700 dark:border-slate-600 dark:bg-slate-800 dark:text-slate-200;
+  }
+  .chip {
+    @apply rounded-full border border-slate-300 px-2.5 py-0.5 font-mono text-xs text-slate-800 hover:bg-slate-100 aria-pressed:border-indigo-600 aria-pressed:bg-indigo-600 aria-pressed:text-white dark:border-slate-600 dark:text-slate-100 dark:hover:bg-slate-800 dark:aria-pressed:border-indigo-400 dark:aria-pressed:bg-indigo-500;
+  }
+  .segmented {
+    @apply inline-flex overflow-hidden rounded-md border border-slate-300 dark:border-slate-600;
+  }
+  .segmented > button {
+    @apply px-3 py-1 text-sm text-slate-800 hover:bg-slate-100 aria-pressed:bg-indigo-600 aria-pressed:text-white dark:text-slate-100 dark:hover:bg-slate-800 dark:aria-pressed:bg-indigo-500;
+  }
+  .segmented > button + button {
+    @apply border-l border-slate-300 dark:border-slate-600;
+  }
+  .tab {
+    @apply rounded-md px-2.5 py-1 font-mono text-xs text-slate-700 hover:bg-slate-100 aria-selected:bg-slate-800 aria-selected:text-white dark:text-slate-200 dark:hover:bg-slate-800 dark:aria-selected:bg-slate-200 dark:aria-selected:text-slate-900;
+  }
+  .code {
+    @apply overflow-auto rounded-lg bg-slate-900 p-3 text-xs leading-relaxed text-slate-100 dark:bg-black;
+  }
+  .table-scroll {
+    @apply max-h-[28rem] overflow-auto rounded-lg border border-slate-200 dark:border-slate-700;
+  }
+  .drop {
+    @apply rounded-xl border-2 border-dashed border-slate-300 p-6 text-center dark:border-slate-600;
+  }
+  .drop-over {
+    @apply border-indigo-500 bg-indigo-50 dark:bg-slate-800;
+  }
+  .facts,
+  .metrics {
+    @apply flex flex-wrap gap-x-6 gap-y-2 text-sm;
+  }
+  .facts dt,
+  .metrics dt {
+    @apply text-xs text-slate-600 dark:text-slate-300;
+  }
+  .facts dd,
+  .metrics dd {
+    @apply font-mono font-medium;
+  }
+  .spinner {
+    @apply mr-2 inline-block size-3 animate-spin rounded-full border-2 border-indigo-600 border-t-transparent align-[-1px];
+  }
+}
