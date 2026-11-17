@@ -18,6 +18,10 @@ import { describeError, readOptions, readRaw, runImport, type Timed } from './li
 import { SAMPLES, sampleById, type Sample } from './lib/samples';
 import { SCHEMAS, schemaById } from './lib/schemas';
 import { parseUrlState, serializeUrlState, type UrlState } from './lib/urlState';
+import { releaseStage } from './lib/version';
+
+/** 'beta' for 1.0.0-beta.0; null once a final version is pinned (then there is no prerelease note). */
+const stage = releaseStage(version);
 
 const PREVIEW_ROWS = 8;
 const LINKS = {
@@ -265,7 +269,8 @@ export function App(): ReactElement {
               react-data-import <span className="font-normal text-slate-600 dark:text-slate-300">playground</span>
             </h1>
             <p className="text-xs text-slate-600 dark:text-slate-300">
-              v{version} (prerelease, <code>next</code>) on javascript-excel {ENGINE_VERSION}. Files never leave your browser.
+              v{version}
+              {stage ? <> ({stage}, <code>next</code>)</> : null} on javascript-excel {ENGINE_VERSION}. Files never leave your browser.
             </p>
           </div>
           <nav aria-label="Project links" className="flex flex-wrap items-center gap-1 text-sm">
