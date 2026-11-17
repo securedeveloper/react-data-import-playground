@@ -34,9 +34,18 @@ describe('sample files through mapping and Zod validation', () => {
     expect(before.result.meta.mapping).toEqual({ name: 'Name', email: null, joined: null, amount: null });
     expect(before.result.issues[0]).toMatchObject({ row: 0, field: 'email', code: 'MAPPING_MISSING', severity: 'error' });
     expect(before.result.data).toHaveLength(0);
+    // No per-row "email is null" issues on top of MAPPING_MISSING; only the other fields' real problems.
+    expect(before.result.issues.filter((i) => i.field === 'email')).toHaveLength(1);
+    expect(before.result.issues.map((i) => [i.row, i.field, i.code])).toEqual([
+      [0, 'email', 'MAPPING_MISSING'],
+      [5, 'name', 'INVALID'],
+    ]);
 
     const after = await run('wrong-headers', { email: 'Kontakt' });
-    expect(codes(after.result)).toEqual(['INVALID']);
+    expect(after.result.issues.map((i) => [i.row, i.field, i.column, i.ref, i.message])).toEqual([
+      [4, 'email', 'Kontakt', 'B4', 'Not an e-mail address'],
+      [5, 'name', 'Name', 'A5', 'Name is empty'],
+    ]);
     expect(after.result.data).toHaveLength(4);
     // Every row has the schema's shape; joined and amount have no column, so they are null.
     for (const row of after.result.data) {
@@ -66,17 +75,17 @@ describe('sample files through mapping and Zod validation', () => {
     expect(result.data.every((r) => r.joined === null && r.amount === null)).toBe(true);
   });
 
-  it('bad values: type, required and Zod issues by spreadsheet row', async () => {
+  it('bad values: one issue per bad cell, with the schema field, the source column and the cell', async () => {
     const { result } = await run('bad-values');
     expect(result.rowNumbers).toEqual([2, 9]);
-    expect(codes(result)).toEqual(['INVALID', 'REQUIRED', 'TYPE']);
-    const rows = messagesByRow(result);
-    expect(rows[3]).toContain('Quantity is not a number');
-    expect(rows[4]).toContain('Not a date');
-    expect(rows[5]).toEqual(['Quantity is not a whole number']);
-    expect(rows[6]).toEqual(['Price is negative']);
-    expect(rows[7]).toEqual(['Unknown status']);
-    expect(result.issues.find((i) => i.code === 'TYPE' && i.row === 3)).toMatchObject({ ref: 'D3' });
+    expect(result.issues.map((i) => [i.row, i.field, i.column, i.ref, i.code, i.message])).toEqual([
+      [3, 'quantity', 'Qty', 'D3', 'TYPE', 'D3: "two" is not a number.'],
+      [4, 'date', 'Order date', 'B4', 'TYPE', 'B4: "next Tuesday" is not a date.'],
+      [8, 'orderId', 'Order ID', 'A8', 'REQUIRED', 'Row 8: "orderId" is required.'],
+      [5, 'quantity', 'Qty', 'D5', 'INVALID', 'Quantity is not a whole number'],
+      [6, 'unitPrice', 'Unit price', 'E6', 'INVALID', 'Price is negative'],
+      [7, 'status', 'Status', 'F7', 'INVALID', 'Unknown status'],
+    ]);
     // Empty optional cells are null, not ''.
     expect(result.data[1]).toMatchObject({ orderId: 'A-1008', customer: null, status: null });
   });
@@ -91,13 +100,15 @@ describe('sample files through mapping and Zod validation', () => {
   it('missing required column: MAPPING_MISSING, then mapping Ref to sku leaves the real problems', async () => {
     const before = await run('missing-required');
     expect(before.result.issues.filter((i) => i.code === 'MAPPING_MISSING').map((i) => i.field)).toEqual(['sku']);
+    expect(before.result.issues.filter((i) => i.field === 'sku')).toHaveLength(1);
     const after = await run('missing-required', { sku: 'Ref' });
     expect(after.result.data.map((r) => r.sku)).toEqual(['ABC-1001', 'ABC-1002', 'XYZ-2003']);
     expect(after.result.data[0]).toMatchObject({ active: true, stock: 12 });
     const rows = messagesByRow(after.result);
     expect(rows[4]).toEqual(['SKU must look like ABC-1234']);
     expect(rows[5]).toEqual(['Price must be above 0']);
-    expect(rows[6]).toEqual(expect.arrayContaining(['E6: "yes" is not a boolean.', 'Stock is not a whole number']));
+    expect(rows[6]).toEqual(['E6: "yes" is not a boolean.', 'Stock is not a whole number']);
+    expect(after.result.issues.find((i) => i.code === 'TYPE')).toMatchObject({ field: 'active', column: 'Enabled', ref: 'E6' });
   });
 
   it('without Zod, rows are only mapped: type errors still drop a row, Zod rules do not', async () => {
@@ -110,6 +121,7 @@ describe('sample files through mapping and Zod validation', () => {
     const { raw, result } = await run('large');
     expect(raw.data).toHaveLength(LARGE_ROWS);
     expect(result.data).toHaveLength(LARGE_ROWS - LARGE_ROWS / 500);
-    expect(new Set(result.issues.map((i) => i.row)).size).toBe(LARGE_ROWS / 500);
+    expect(result.issues).toHaveLength(LARGE_ROWS / 500);
+    expect(result.issues.every((i) => i.code === 'TYPE' && i.field === 'quantity' && i.column === 'Qty')).toBe(true);
   });
 });

@@ -93,7 +93,7 @@ function IssuesCard({ issues, errors, warnings }: { issues: readonly ImportIssue
       ) : (
         <>
           <p className="hint mb-2">
-            {errors} error{errors === 1 ? '' : 's'}, {warnings} warning{warnings === 1 ? '' : 's'}. Row numbers are spreadsheet rows as Excel shows them; row 0 is a file-level issue.
+            {errors} error{errors === 1 ? '' : 's'}, {warnings} warning{warnings === 1 ? '' : 's'}. Row numbers are spreadsheet rows as Excel shows them; row 0 is a file-level issue. Field is the schema field (the key in the rows); column and cell point into the file.
           </p>
           <div role="group" aria-label="Filter issues by code" className="mb-3 flex flex-wrap gap-1.5">
             <button type="button" className="chip" aria-pressed={active === null} onClick={() => setCode(null)}>
@@ -109,7 +109,7 @@ function IssuesCard({ issues, errors, warnings }: { issues: readonly ImportIssue
             <table className="w-full border-collapse text-left text-sm">
               <thead className="sticky top-0 bg-slate-100 dark:bg-slate-800">
                 <tr>
-                  {['Row', 'Cell', 'Field', 'Code', 'Severity', 'Message'].map((h) => (
+                  {['Row', 'Cell', 'Field', 'Column', 'Code', 'Severity', 'Message'].map((h) => (
                     <th key={h} scope="col" className="px-3 py-2 font-semibold">
                       {h}
                     </th>
@@ -122,6 +122,7 @@ function IssuesCard({ issues, errors, warnings }: { issues: readonly ImportIssue
                     <td className="px-3 py-1.5 font-mono text-xs">{i.row || 'file'}</td>
                     <td className="px-3 py-1.5 font-mono text-xs">{i.ref ?? ''}</td>
                     <td className="px-3 py-1.5 font-mono text-xs">{i.field ?? ''}</td>
+                    <td className="px-3 py-1.5 text-xs">{i.column ?? ''}</td>
                     <td className="px-3 py-1.5 font-mono text-xs">{i.code}</td>
                     <td className="px-3 py-1.5">
                       <Badge tone={i.severity === 'error' ? 'red' : 'amber'}>{i.severity}</Badge>

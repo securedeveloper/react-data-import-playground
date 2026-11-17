@@ -24,6 +24,9 @@ describe('playground', () => {
     expect(within(issues()).queryByText('MAPPING_MISSING')).toBeNull();
     expect(within(issues()).getByText('Not an e-mail address')).toBeTruthy();
     expect(within(issues()).getByText('Name is empty')).toBeTruthy();
+    // Each issue names the schema field, the source column and the cell.
+    const emailRow = within(issues()).getByText('Not an e-mail address').closest('tr')!;
+    expect([...emailRow.querySelectorAll('td')].map((td) => td.textContent)).toEqual(['4', 'B4', 'email', 'Kontakt', 'INVALID', 'error', 'Not an e-mail address']);
 
     // Unmapped optional fields are shown as null in every row.
     const rows = screen.getByRole('region', { name: '4 valid rows' });
