@@ -21,7 +21,7 @@ The version of react-data-import is pinned exactly in `package.json`, from npm's
 
 ## Local development
 
-Node 22.12 or later (CI uses Node 24).
+Node 22.12 or later (CI uses Node 26).
 
 ```sh
 npm ci
